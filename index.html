@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Will : Wiimote on linux" />
 
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Will by joxer</title>
+    <title>Will</title>
   </head>
 
   <body>
 
-    <header>
-      <div class="container">
-        <h1>Will</h1>
-        <h2>Wiimote on linux</h2>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/joxer/Will">View on GitHub</a>
 
-        <section id="downloads">
-          <a href="https://github.com/joxer/Will/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/joxer/Will/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/joxer/Will" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+          <h1 id="project_title">Will</h1>
+          <h2 id="project_tagline">Wiimote on linux</h2>
 
-    <div class="container">
-      <section id="main_content">
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/joxer/Will/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/joxer/Will/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>Will</h1>
 
 <p>Wiimote on linux</p>
@@ -37,16 +40,17 @@ The program is configurable to use the motion plus or the nunchuk as mouse point
 
 <p>=== Use it ===</p>
 
-<p>1)install python-cwiid and python-xlib on your system
-2)edit config.yml with the following options:</p>
+<p>1)install python-cwiid and python-xlib on your system</p>
+
+<p>2)edit config.yml with the following options:</p>
 
 <ul>
 <li>mouse = [motion|nunchuck]</li>
-<li><p>offset = [0-100]</p></li>
-</ul>
-<p>mouse is the type of control you want to use, offset is the pixel you move at each movement
-3) python will.py
-4) enjoy your wiimote</p>
+<li>offset = [0-100]
+mouse is the type of control you want to use, offset is the pixel you move at each movement</li>
+</ul><p>3) python will.py</p>
+
+<p>4) enjoy your wiimote</p>
 
 <p>=== Info ===</p>
 
@@ -84,6 +88,15 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
       </section>
     </div>
 
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Will maintained by <a href="https://github.com/joxer">joxer</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
     
+
   </body>
 </html>
