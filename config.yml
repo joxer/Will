@@ -1,2 +1,4 @@
 mouse: motion
 offset: 4
+a: xdotool click 1
+b: xdotool click 3
