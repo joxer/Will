@@ -1,6 +1,7 @@
 import cwiid
 import time
 import pygame
+import uinput
 from parser import *
 
 import os
@@ -8,7 +9,7 @@ import threading
 import re
 from collections import deque
 from gi.repository import Gtk
-import uinput
+
 
 #import sys
 
@@ -21,7 +22,7 @@ class Will:
     _original_nunpos = []
     conf = {}
     action = {"mouse":None}
-    events = (uinput.ABS_X, uinput.ABS_Y, uinput.BTN_LEFT, uinput.BTN_RIGHT)
+    events = (uinput.ABS_X, uinput.ABS_Y, uinput.BTN_LEFT, uinput.BTN_RIGHT,uinput.KEY_LEFT,uinput.KEY_RIGHT)
     device = uinput.Device(events)
     def __init__(self):
 
@@ -64,18 +65,32 @@ class Will:
     #            print self._wm.state['motionplus']['angle_rate'][2]
 #            self.load_mouse(s.root,d)
 #            print self.action
-            print self._wm.state
+        #    print self._wm.state
             self.action["mouse"]()
        
         
             if self._wm.state['buttons'] == 8 and old_button != 8:
 #                print "button is 8"
                 old_button = 8
-                os.system(self.conf['a'])
+                self.device.emit(self.conf['a'],1)
+                self.device.emit(self.conf['a'],0)
+
+#                os.system(self.conf['a'])
             elif self._wm.state['buttons'] == 4 and old_button != 4:
 #                print "button is 4"
                 old_button = 4
-                os.system(self.conf['b'])
+                self.device.emit(self.conf['b'],1)
+                self.device.emit(self.conf['b'],0)
+
+#                os.system(self.conf['b'])
+            elif self._wm.state['buttons'] == 512 and old_button != 512:
+                self.device.emit(uinput.KEY_RIGHT,1)
+                self.device.emit(uinput.KEY_RIGHT,0)
+
+            elif self._wm.state['buttons'] == 256 and old_button != 512:
+                self.device.emit(uinput.KEY_LEFT,1)
+                self.device.emit(uinput.KEY_LEFT,0)
+
             elif self._wm.state['buttons'] == 2048 and old_button != 2048:
                 os.system("xdotool click 4")
                 old_button = 2048
@@ -85,7 +100,7 @@ class Will:
             elif self._wm.state['buttons'] == 4096 and old_button != 4096:
                 os.system("xdotool key ctrl+plus")
                 old_button = 1024
-                print self._wm.state
+
             elif self._wm.state['buttons'] == 16 and old_button != 16:
                 os.system("xdotool key ctrl+minus")
                 old_button = 1024
@@ -96,7 +111,7 @@ class Will:
                 self.device.emit(uinput.ABS_Y,self._posy)
 
 
-            if(counter % 50 == 0):
+            if(counter % 70 == 0):
 #                print "counter 10"
                 counter = 0
                 old_button = 0
@@ -107,9 +122,11 @@ class Will:
         self._wm.led = cwiid.LED1_ON
         
         self.conf.update(mouse=conf['mouse'])
-        self.conf.update(a=conf['a'])
-        self.conf.update(b=conf['b'])
+        self.conf.update(a=ConfigDic.get_name(conf['a']))
+        self.conf.update(b=ConfigDic.get_name(conf['b']))
         self._offset = conf['offset']
+
+#        print ConfigDic.get_name(self.conf['a'])
 
         window = Gtk.Window()
         screen = window.get_screen()
@@ -152,54 +169,54 @@ class Will:
 
         
     def load_nunchuk(self):
-#        print self._wm.state
+        print self._wm.state
         nunpos = self._wm.state['nunchuk']['stick']
-        print self._original_nunpos
+#        print self._original_nunpos
         if (self._posx-self._offset) <= -1:
-            if(nunpos[0] > self._original_nunpos[0]+5):
+            if(nunpos[0] > self._original_nunpos[0]+15):
                 self._posx += self._offset
                 self._wm.rumble = 1
                 time.sleep(0.01)
                 self._wm.rumble = 0
 
-        elif (self._posx+self._offset) >= self._width+5:
-            if(nunpos[0] < self._original_nunpos[0]-5):
+        elif (self._posx+self._offset) >= self._width+15:
+            if(nunpos[0] < self._original_nunpos[0]-15):
                 self._posx -= self._offset
                 self._wm.rumble = 1
                 time.sleep(0.01)
                 self._wm.rumble = 0
 
-        elif (self._posx-self._offset) > -5 and (self._posx+self._offset) < self._width:
+        elif (self._posx-self._offset) > -15 and (self._posx+self._offset) < self._width:
 
-            if(nunpos[0] > self._original_nunpos[0]+5):
+            if(nunpos[0] > self._original_nunpos[0]+15):
                 self._posx += self._offset
-            if(nunpos[0] < self._original_nunpos[0]-5):
+            if(nunpos[0] < self._original_nunpos[0]-15):
                 self._posx -= self._offset
 
-        if (self._posy-self._offset) <= -5:
-            if(nunpos[1] < self._original_nunpos[1]-5):
+        if (self._posy-self._offset) <= -15:
+            if(nunpos[1] < self._original_nunpos[1]-15):
                 self._posy += self._offset
                 self._wm.rumble = 1
                 time.sleep(0.01)
                 self._wm.rumble = 0
 
         elif  (self._posy+self._offset) >= self._height:
-            if(nunpos[1] > self._original_nunpos[1]+5):
+            if(nunpos[1] > self._original_nunpos[1]+15):
                 self._posy -= self._offset
                 self._wm.rumble = 1
                 time.sleep(0.01)
                 self._wm.rumble = 0
 
-        elif(self._posy-self._offset) > -5 and (self._posy+self._offset) < self._height:
-            if(nunpos[1] < self._original_nunpos[1]-5):
+        elif(self._posy-self._offset) > -15 and (self._posy+self._offset) < self._height:
+            if(nunpos[1] < self._original_nunpos[1]-15):
                 self._posy += self._offset
-            if(nunpos[1] > self._original_nunpos[1]+5):
+            if(nunpos[1] > self._original_nunpos[1]+15):
                 self._posy -= self._offset
         
         self.device.emit(uinput.ABS_X,self._posx)
         self.device.emit(uinput.ABS_Y,self._posy)
     #root.warp_pointer(self._posx,self._posy)
-        display.sync()
+    #        display.sync()
 
 
     def load_motion(self):

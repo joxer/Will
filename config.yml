@@ -1,4 +1,4 @@
-mouse: motion
+mouse: nunchuk
 offset: 4
-a: xdotool click 1
-b: xdotool click 3
+a: right
+b: left
