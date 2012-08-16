@@ -8,7 +8,7 @@ import os
 import threading
 import re
 from collections import deque
-from gi.repository import Gtk
+#from gi.repository import Gtk
 
 
 #import sys
@@ -128,10 +128,14 @@ class Will:
 
 #        print ConfigDic.get_name(self.conf['a'])
 
-        window = Gtk.Window()
-        screen = window.get_screen()
-        self._width = screen.get_width()
-        self._height = screen.get_height()
+        m = re.search('\d+x\d+',commands.getoutput("xrandr | grep '*'"))
+        self._width = m.group(0).split("*")[0]
+        self._height = m.group(0).split("*")[1]
+#
+#        window = Gtk.Window()
+#        screen = window.get_screen()
+#        self._width = screen.get_width()
+#        self._height = screen.get_height()
 
         self.load_mouse()
 

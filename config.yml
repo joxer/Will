@@ -1,4 +1,4 @@
-mouse: nunchuk
+mouse: motion
 offset: 4
-a: right
-b: left
+a: lclick
+b: rclick
