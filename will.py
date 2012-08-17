@@ -3,7 +3,7 @@ import time
 import pygame
 import uinput
 from parser import *
-
+import sys
 import os
 import threading
 import re
@@ -22,23 +22,37 @@ class Will:
     _original_nunpos = []
     conf = {}
     action = {"mouse":None}
-    events = (uinput.ABS_X, uinput.ABS_Y, uinput.BTN_LEFT, uinput.BTN_RIGHT,uinput.KEY_LEFT,uinput.KEY_RIGHT)
-    device = uinput.Device(events)
+    events = None
+    device = None
     def __init__(self):
 
-        
+        try:
+            events = (uinput.ABS_X, uinput.ABS_Y, uinput.BTN_LEFT, uinput.BTN_RIGHT,uinput.KEY_LEFT,uinput.KEY_RIGHT)
+            device = uinput.Device(events)
+        except OSError as e:
+            print "OS error({0}): {1}".format(e.errno, e.strerror)
+            sys.exit(1)
 #        self._posx = posx = display.Display().screen().root.query_pointer()._data['root_x']
 #        self._posy = display.Display().screen().root.query_pointer()._data['root_y']
 
 #        sys.stdout = os.devnull
+        
         print "Put your wiimote in discovery mode by pressing 1+2..."
-        self._wm = cwiid.Wiimote()
+        try:
+            self._wm = cwiid.Wiimote()
+        except RuntimeError as e:
+            print "Runtime error: Cannot find any wiimote"
+            sys.exit(1)
+        
+
         print "found"
 
         self._wm.rpt_mode = cwiid.RPT_ACC  | cwiid.RPT_BTN  | cwiid.RPT_IR 
         time.sleep(1)
-        
-        parser = Parser("config.yml")
+        try:
+            parser = Parser("config.yml")
+        except IOError:
+            print "cannot find config file config.yml"
         self.load_conf(parser.get_conf())
         
         
@@ -48,8 +62,9 @@ class Will:
         
         self._posx = self._width/2
         self._posy = self._height/2
-        
 
+###    Center to screen the pointer
+        
         self.device.emit(uinput.ABS_X,self._posx)
         self.device.emit(uinput.ABS_Y,self._posy)
 
@@ -62,48 +77,58 @@ class Will:
             counter +=1
             time.sleep(0.01)
 
-    #            print self._wm.state['motionplus']['angle_rate'][2]
+#            print self._wm.state['motionplus']['angle_rate'][2]
 #            self.load_mouse(s.root,d)
 #            print self.action
-        #    print self._wm.state
+#            print self._wm.state
+
+            #do main action to move pointer
             self.action["mouse"]()
        
         
             if self._wm.state['buttons'] == 8 and old_button != 8:
-#                print "button is 8"
                 old_button = 8
-                self.device.emit(self.conf['a'],1)
-                self.device.emit(self.conf['a'],0)
-
-#                os.system(self.conf['a'])
+                if(self.conf['a'] != None):
+                    self.device.emit(self.conf['a'],1)
+                    self.device.emit(self.conf['a'],0)
+                
             elif self._wm.state['buttons'] == 4 and old_button != 4:
-#                print "button is 4"
                 old_button = 4
-                self.device.emit(self.conf['b'],1)
-                self.device.emit(self.conf['b'],0)
+                if(self.conf['b'] != None):
+                    self.device.emit(self.conf['b'],1)
+                    self.device.emit(self.conf['b'],0)
 
-#                os.system(self.conf['b'])
-            elif self._wm.state['buttons'] == 512 and old_button != 512:
-                self.device.emit(uinput.KEY_RIGHT,1)
-                self.device.emit(uinput.KEY_RIGHT,0)
+            elif self._wm.state['buttons'] == 512:
+                if(self.conf['right'] != None):
+                    self.device.emit(self.conf['right'],1)
+                    self.device.emit(self.conf['right'],0)
 
-            elif self._wm.state['buttons'] == 256 and old_button != 512:
-                self.device.emit(uinput.KEY_LEFT,1)
-                self.device.emit(uinput.KEY_LEFT,0)
+            elif self._wm.state['buttons'] == 256:
+                if(self.conf['left'] != None):
+                    self.device.emit(self.conf['left'],1)
+                    self.device.emit(self.conf['left'],0)
 
-            elif self._wm.state['buttons'] == 2048 and old_button != 2048:
-                os.system("xdotool click 4")
-                old_button = 2048
-            elif self._wm.state['buttons'] == 1024 and old_button != 1024:
-                os.system("xdotool click 5")
-                old_button = 1024
-            elif self._wm.state['buttons'] == 4096 and old_button != 4096:
-                os.system("xdotool key ctrl+plus")
-                old_button = 1024
+            elif self._wm.state['buttons'] == 2048:
+                if(self.conf['up'] != None):
+                    self.device.emit(self.conf['up'],1)
+                    self.device.emit(self.conf['up'],0)
 
-            elif self._wm.state['buttons'] == 16 and old_button != 16:
-                os.system("xdotool key ctrl+minus")
-                old_button = 1024
+                
+            elif self._wm.state['buttons'] == 1024:
+                if(self.conf['down'] != None):
+                    self.device.emit(self.conf['down'],1)
+                    self.device.emit(self.conf['down'],0)
+
+            elif self._wm.state['buttons'] == 4096:
+                if(self.conf['plus'] != None):
+                    self.device.emit(self.conf['plus'],1)
+                    self.device.emit(self.conf['plus'],0)
+                
+            elif self._wm.state['buttons'] == 16:
+                if(self.conf['minus'] != None):
+                    self.device.emit(self.conf['minus'],1)
+                    self.device.emit(self.conf['minus'],0)
+                                
             elif self._wm.state['buttons'] == 128 and old_button != 128:
                 self._posx = self._width/2
                 self._posy = self._height/2
@@ -124,11 +149,20 @@ class Will:
         self.conf.update(mouse=conf['mouse'])
         self.conf.update(a=ConfigDic.get_name(conf['a']))
         self.conf.update(b=ConfigDic.get_name(conf['b']))
+        self.conf.update(up=ConfigDic.get_name(conf['up']))
+        self.conf.update(down=ConfigDic.get_name(conf['down']))
+        self.conf.update(left=ConfigDic.get_name(conf['left']))
+        self.conf.update(right=ConfigDic.get_name(conf['right']))
+        self.conf.update(plus=ConfigDic.get_name(conf['plus']))
+        self.conf.update(minus=ConfigDic.get_name(conf['minus']))
         self._offset = conf['offset']
 
 #        print ConfigDic.get_name(self.conf['a'])
 
         m = re.search('\d+x\d+',commands.getoutput("xrandr | grep '*'"))
+        if m==None:
+            print "can't open display"
+            sys.exit(1)
         self._width = m.group(0).split("*")[0]
         self._height = m.group(0).split("*")[1]
 #
