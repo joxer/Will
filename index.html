@@ -30,41 +30,50 @@
       <section id="main_content">
         <h1>Will</h1>
 
-<p>Wiimote on linux</p>
+<h2>=== Wiimote on linux ===</h2>
 
-<p>Will is a simple program made in python using python-cwiid and python-xlib to control the X server with a wiimote.
+<p>Will is a simple program made in python using python-cwiid and python-uinput ( <a href="https://github.com/tuomasjjrasanen/python-uinput">https://github.com/tuomasjjrasanen/python-uinput</a> )
 The program is configurable to use the motion plus or the nunchuk as mouse pointer.</p>
 
-<p>=== Use it ===</p>
+<h2>=== Use it ===</h2>
 
 <ol>
-<li>install python-cwiid and python-xlib on your system</li>
-<li>edit config.yml with the following options:</li>
+<li>install python-cwiid and python-uinput on your system</li>
+<li>edit config.yml</li>
 <li>python will.py</li>
+<li>set permission for udev on your wiimote</li>
 <li>enjoy your wiimote</li>
-</ol><p>=== Configure it ===</p>
+</ol><h2>=== Configure it ===</h2>
 
 <p>The config.yml contains to parameter</p>
 
 <ul>
 <li>mouse = [motion|nunchuck]</li>
 <li>offset = [0-100]</li>
+<li>a = [keyboard key for key a]</li>
+<li>b = [keyboard key for key b]</li>
+<li>up = [keyboard key for key up]</li>
+<li>down = [keyboard key for key down]</li>
+<li>left = [keyboard key for key left]</li>
+<li>right = [keyboard key for key right]</li>
+<li>plus = [keyboard key for key plus]</li>
+<li>minus = [keyboard key for key minus]</li>
 </ul><p><b>mouse</b> is the type of control you want to use, <b>offset</b> is the pixel offset at each movement</p>
 
-<p>=== Info ===</p>
+<h2>=== Set permission for udev ===</h2>
+
+<p>First load the kernel module uinput and assure that you have it in the kernel:</p>
+
+<p>**** modprobe uinput</p>
+
+<p>then you can put uinput device permission to /dev/uinput</p>
+
+<p>**** chmod 0666 /dev/uinput</p>
+
+<h2>=== Info ===</h2>
 
 <p>I've created this software cause i'm far from an eletronic shop to buy ir leds and build a irda bar (yes, you can argue me that i didn't use 2 candles for trying, but i'm lazy)
 I'm very optimist about the motion plus, it's a great piece of hardware to use and to hack.</p>
-
-<p>I've set for now simple actions with buttons:</p>
-
-<ul>
-<li>A: left mouse click</li>
-<li>B: right mouse click</li>
-<li>+: zoom in</li>
-<li>-: zoom out</li>
-<li>home: reset pointer to center of screen</li>
-</ul><p>I'll get them configurable very soon.</p>
 
 <p>Best use is with a raspberry pi, on board screen and a television, you can browse internet directly from wiimote without a mouse and a keyboard. I'll post soon some videos.</p>
 
